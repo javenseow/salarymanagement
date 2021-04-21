@@ -20,4 +20,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public void upload(MultipartFile file) {
+        try {
+            List<User> users = UserHelper.csvToUser(file.getInputStream());
+            userRepository.saveAll(users);
+        } catch (IOException e) {
+            throw new RuntimeException("fail to store csv data: " + e.getMessage());
+        }
+    }
+
 }
