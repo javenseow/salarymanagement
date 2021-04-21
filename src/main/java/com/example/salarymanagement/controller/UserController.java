@@ -30,8 +30,8 @@ public class UserController {
                 message = "File upload successful: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body( "\" message \": \" " + message + " \"");
             } catch (Exception e) {
-                message = "File upload unsuccessful: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( "\" message \": \" " + message + " \"");
+                message = file.getOriginalFilename() + " upload unsuccessful: " + e.getMessage();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message \": \" " + message + " \"");
             }
         }
 

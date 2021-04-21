@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -27,10 +29,22 @@ public class UserService {
     public void upload(MultipartFile file) {
         try {
             List<User> users = UserHelper.csvToUser(file.getInputStream());
+            if (checkDuplicates(users)) {
+                throw new IOException("duplicate row");
+            }
             userRepository.saveAll(users);
         } catch (IOException e) {
             throw new RuntimeException("fail to store csv data: " + e.getMessage());
         }
     }
 
+    /**
+     * Checks for duplicate rows in CSV given
+     * @param users
+     * @return true if sizes are not the same, false otherwise
+     */
+    private boolean checkDuplicates(List<User> users) {
+        Set<User> setOfUsers = new HashSet<>(users);
+        return setOfUsers.size() < users.size();
+    }
 }
