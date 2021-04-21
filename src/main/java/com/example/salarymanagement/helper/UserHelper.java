@@ -39,15 +39,26 @@ public class UserHelper {
 
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            String line = br.readLine(); // ignore header
+            // Ignore header
+            String line = br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                users.add(new User(values[0], values[1], values[2], Float.parseFloat(values[3]), LocalDate.parse(values[4], formatter)));
+                if (checkSalary(values[3])) {
+                    users.add(new User(values[0], values[1], values[2], Float.parseFloat(values[3]), LocalDate.parse(values[4], formatter)));
+                }
+                else {
+                    throw new IOException("invalid salary");
+                }
             }
 
             return users;
         } catch (IOException e) {
             throw new RuntimeException("Fail to parse CSV file: " + e.getMessage());
         }
+    }
+
+    private static boolean checkSalary (String salary) {
+        float numSalary = Float.parseFloat(salary);
+        return numSalary >= 0;
     }
 }
