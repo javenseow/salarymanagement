@@ -17,11 +17,20 @@ import java.util.List;
 public class UserHelper {
     public static String TYPE = "text/csv";
 
+    /**
+     * Checks if the file is of CSV format
+     * @param file
+     * @return true if file is CSV, else returns false
+     */
     public static boolean hasCSVFormat(MultipartFile file) {
         return TYPE.equals(file.getContentType());
     }
 
-    // Converts values in CSV files to an arraylist of users
+    /**
+     * Converts CSV file to a list of user objects
+     * @param is inputstream of csv file
+     * @return List of user objects
+     */
     public static List<User> csvToUser(InputStream is) {
         List<User> users = new ArrayList<>();
 

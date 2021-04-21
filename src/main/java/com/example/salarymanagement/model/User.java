@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class User {
     @Id
     private String id;
+    @Column(unique = true)
     private String login;
     private String name;
     private Float salary;

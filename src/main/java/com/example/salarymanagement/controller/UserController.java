@@ -16,18 +16,22 @@ public class UserController {
     private UserService userService;
 
 
+    /**
+     * [POST] To upload a CSV file of users
+     * @param file
+     * @return Response of 200 if upload is successful
+     */
     @PostMapping(path = "/upload")
     public ResponseEntity<String> uploadUsers(@RequestParam("file") MultipartFile file) {
         String message;
         if (UserHelper.hasCSVFormat(file)) {
-            userService.upload(file);
             try {
                 userService.upload(file);
                 message = "File upload successful: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body( "\" message \": \" " + message + " \"");
             } catch (Exception e) {
                 message = "File upload unsuccessful: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "\" message \": \" " + message + " \"");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( "\" message \": \" " + message + " \"");
             }
         }
 

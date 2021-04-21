@@ -20,6 +20,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Uploads CSV file to repository, saving data into the database
+     * @param file
+     */
     public void upload(MultipartFile file) {
         try {
             List<User> users = UserHelper.csvToUser(file.getInputStream());
