@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,5 +63,20 @@ public class UserService {
         List<User> usersInDB = userRepository.findAll();
 
         return !users.equals(usersInDB);
+    }
+
+    /**
+     * Returns a list of users according to the parameters given
+     * @param minSalary default is 0
+     * @param maxSalary default is 4000
+     * @param offset default is 0
+     * @param limit default 0
+     * @return a list of users that fulfills the parameters given
+     */
+    public List<User> getUsers(Double minSalary, Double maxSalary, Integer offset, Integer limit) {
+        List<User> allUsers = userRepository.findAll();
+        List<User> finalUsers = UserHelper.processUsers(allUsers, minSalary, maxSalary, offset, limit);
+
+        return finalUsers;
     }
 }

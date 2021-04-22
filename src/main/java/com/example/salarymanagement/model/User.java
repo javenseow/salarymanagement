@@ -2,6 +2,7 @@ package com.example.salarymanagement.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Entity
 @Table
@@ -11,13 +12,13 @@ public class User {
     @Column(unique = true)
     private String login;
     private String name;
-    private Float salary;
+    private Double salary;
     private LocalDate startDate;
 
     public User() {
     }
 
-    public User(String id, String login, String name, Float salary, LocalDate startDate) {
+    public User(String id, String login, String name, Double salary, LocalDate startDate) {
         this.id = id;
         this.login = login;
         this.name = name;
@@ -33,7 +34,7 @@ public class User {
         this.name = name;
     }
 
-    public void setSalary(Float salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 
@@ -45,7 +46,7 @@ public class User {
         return name;
     }
 
-    public Float getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
@@ -55,13 +56,12 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", salary=" + salary +
-                ", startDate=" + startDate +
-                '}';
+        return "{\"id\": \"" + id + '\"' +
+                ", \"login\": \"" + login + '\"' +
+                ", \"name\": \"" + name + '\"' +
+                ", \"salary\": " + salary +
+                ", \"startDate\": \"" + startDate +
+                "\"}";
     }
 
     @Override
@@ -78,7 +78,17 @@ public class User {
         return id.compareTo(u.id) == 0
                 && (login.compareTo(u.login) == 0)
                 && (name.compareTo(u.name) ==  0)
-                && Float.compare(salary, u.salary) == 0
+                && Double.compare(salary, u.salary) == 0
                 && (startDate.compareTo(u.startDate) == 0);
     }
+
+    public static Comparator<User> UserComparator = new Comparator<User>() {
+        @Override
+        public int compare(User o1, User o2) {
+            String user1Id = o1.getId().toLowerCase();
+            String user2Id = o2.getId().toLowerCase();
+
+            return user1Id.compareTo(user2Id);
+        }
+    };
 }
