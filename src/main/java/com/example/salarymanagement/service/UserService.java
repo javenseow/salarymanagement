@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,14 +26,20 @@ public class UserService {
     /**
      * Uploads CSV file to repository, saving data into the database
      * @param file
+     * @return true if there was an update done, false otherwise
      */
-    public void upload(MultipartFile file) {
+    public boolean upload(MultipartFile file) {
         try {
             List<User> users = UserHelper.csvToUser(file.getInputStream());
             if (checkDuplicates(users)) {
                 throw new IOException("duplicate row");
             }
+
+            boolean updates = checkDataCreated(users);
+
             userRepository.saveAll(users);
+
+            return updates;
         } catch (IOException e) {
             throw new RuntimeException("fail to store csv data: " + e.getMessage());
         }
@@ -46,5 +53,16 @@ public class UserService {
     private boolean checkDuplicates(List<User> users) {
         Set<User> setOfUsers = new HashSet<>(users);
         return setOfUsers.size() < users.size();
+    }
+
+    /**
+     * Checks if data was created in the database
+     * @param users
+     * @return true is data is created, false otherwise
+     */
+    private boolean checkDataCreated(List<User> users) {
+        List<User> usersInDB = userRepository.findAll();
+
+        return !users.equals(usersInDB);
     }
 }

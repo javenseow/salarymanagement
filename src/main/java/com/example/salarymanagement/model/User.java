@@ -49,6 +49,10 @@ public class User {
         return salary;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -58,5 +62,23 @@ public class User {
                 ", salary=" + salary +
                 ", startDate=" + startDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof User)) {
+            return false;
+        }
+
+        User u = (User) o;
+        return id.compareTo(u.id) == 0
+                && (login.compareTo(u.login) == 0)
+                && (name.compareTo(u.name) ==  0)
+                && Float.compare(salary, u.salary) == 0
+                && (startDate.compareTo(u.startDate) == 0);
     }
 }

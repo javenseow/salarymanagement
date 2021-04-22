@@ -26,9 +26,13 @@ public class UserController {
         String message;
         if (UserHelper.hasCSVFormat(file)) {
             try {
-                userService.upload(file);
-                message = "File upload successful: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body( "\" message \": \" " + message + " \"");
+                if (userService.upload(file)) {
+                    message = file.getOriginalFilename() + " upload successful";
+                    return ResponseEntity.status(HttpStatus.CREATED).body("\" message \": \" " + message + "\"");
+                } else {
+                    message = file.getOriginalFilename() + " upload successful without updates";
+                    return ResponseEntity.status(HttpStatus.OK).body("\" message \": \" " + message + "\"");
+                }
             } catch (Exception e) {
                 message = file.getOriginalFilename() + " upload unsuccessful: " + e.getMessage();
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message \": \" " + message + " \"");
