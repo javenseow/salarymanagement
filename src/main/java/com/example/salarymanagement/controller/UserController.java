@@ -32,19 +32,19 @@ public class UserController {
             try {
                 if (userService.upload(file)) {
                     message = file.getOriginalFilename() + " upload successful";
-                    return ResponseEntity.status(HttpStatus.CREATED).body("\" message \": \" " + message + "\"");
+                    return ResponseEntity.status(HttpStatus.CREATED).body("\" message\": \"" + message + "\"");
                 } else {
                     message = file.getOriginalFilename() + " upload successful without updates";
-                    return ResponseEntity.status(HttpStatus.OK).body("\" message \": \" " + message + "\"");
+                    return ResponseEntity.status(HttpStatus.OK).body("\" message\": \"" + message + "\"");
                 }
             } catch (Exception e) {
                 message = file.getOriginalFilename() + " upload unsuccessful: " + e.getMessage();
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message \": \" " + message + " \"");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + message + " \"");
             }
         }
 
         message = "Please upload a CSV file";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( "\" message \": \" " + message + " \"");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( "\" message\": \"" + message + " \"");
     }
 
     /**
@@ -75,7 +75,7 @@ public class UserController {
 
         List<User> results = userService.getUsers(minSalary, maxSalary, offset, limit);
 
-        return ResponseEntity.status(HttpStatus.OK).body("\" results \": " + results);
+        return ResponseEntity.status(HttpStatus.OK).body("\" results\": " + results);
     }
 
     /**
@@ -89,8 +89,23 @@ public class UserController {
         try {
             user = userService.getUser(id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + "\"");
         }
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+    /**
+     * [DELETE] Deletes an employee based on the given id
+     * @param id employee id
+     * @return response 200 if user exists
+     */
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        try {
+            userService.deleteUser(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + " \"");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("\" message \": \"Successfully deleted\" ");
     }
 }

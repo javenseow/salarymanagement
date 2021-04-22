@@ -91,4 +91,15 @@ public class UserService {
 
         return user;
     }
+    /**
+     * Deletes user based on id given
+     * @param id employee id
+     */
+    public void deleteUser(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalStateException("No such employee");
+        }
+
+        userRepository.deleteById(id);
+    }
 }
