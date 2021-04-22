@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -91,6 +92,21 @@ public class UserService {
 
         return user;
     }
+
+    /**
+     * Creates a new user into the database
+     * @param user employee to be added
+     */
+    public void createUser(User user) {
+        Optional<User>userOptional = userRepository.findById(user.getId());
+
+        if (userOptional.isPresent()) {
+            throw new IllegalStateException("Employee ID already exists");
+        }
+
+        userRepository.save(user);
+    }
+
     /**
      * Deletes user based on id given
      * @param id employee id

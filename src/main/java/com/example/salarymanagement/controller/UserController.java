@@ -93,6 +93,29 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
+
+    /**
+     * [POST] Creates a new user into the database
+     * @param user employee to be added
+     * @return response 200 if added
+     */
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            userService.createUser(user);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+
+            if (errorMessage.contains("LOGIN")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"Employee login not unique\"");
+            } else if (e instanceof IllegalStateException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + "\"");
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("\" message\": \"Successfully created\"");
+    }
+
     /**
      * [DELETE] Deletes an employee based on the given id
      * @param id employee id
