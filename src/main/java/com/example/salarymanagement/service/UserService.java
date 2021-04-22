@@ -79,4 +79,16 @@ public class UserService {
 
         return finalUsers;
     }
+
+    /**
+     * Gets user based on id given
+     * @param id employee id
+     * @return user object
+     */
+    public User getUser(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("no such employee"));
+
+        return user;
+    }
 }

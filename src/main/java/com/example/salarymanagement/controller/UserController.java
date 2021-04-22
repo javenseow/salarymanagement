@@ -3,8 +3,6 @@ package com.example.salarymanagement.controller;
 import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.service.UserService;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,7 +56,7 @@ public class UserController {
      * @return Response of 200 with list of user
      */
     @GetMapping
-    public ResponseEntity<?> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
+    public ResponseEntity<String> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
         if (minSalary == null) {
             minSalary = 0.0;
         }
@@ -78,5 +76,21 @@ public class UserController {
         List<User> results = userService.getUsers(minSalary, maxSalary, offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body("\" results \": " + results);
+    }
+
+    /**
+     * [GET] Fetches an employee based on the given id
+     * @param id employee id
+     * @return response 200 if id exists
+     */
+    @GetMapping(path = "{id}")
+    public ResponseEntity<?> fetchUser(@PathVariable String id) {
+        User user;
+        try {
+            user = userService.getUser(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
