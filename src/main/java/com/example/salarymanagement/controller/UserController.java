@@ -1,5 +1,6 @@
 package com.example.salarymanagement.controller;
 
+import com.example.salarymanagement.helper.Response;
 import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.service.UserService;
@@ -26,25 +27,25 @@ public class UserController {
      * @return Response of 200 if upload is successful without updates, 201 if upload was successful with data creation/updates, else 400
      */
     @PostMapping(path = "/upload")
-    public ResponseEntity<String> uploadUsers(@RequestParam("file") MultipartFile file) {
-        String message;
+    public ResponseEntity<Response> uploadUsers(@RequestParam("file") MultipartFile file) {
+        Response response;
         if (UserHelper.hasCSVFormat(file)) {
             try {
                 if (userService.upload(file)) {
-                    message = file.getOriginalFilename() + " upload successful";
-                    return ResponseEntity.status(HttpStatus.CREATED).body("\" message\": \"" + message + "\"");
+                    response = new Response("Success with data created or updated");
+                    return ResponseEntity.status(HttpStatus.CREATED).body(response);
                 } else {
-                    message = file.getOriginalFilename() + " upload successful without updates";
-                    return ResponseEntity.status(HttpStatus.OK).body("\" message\": \"" + message + "\"");
+                    response = new Response("Success with no data update");
+                    return ResponseEntity.status(HttpStatus.OK).body(response);
                 }
             } catch (Exception e) {
-                message = file.getOriginalFilename() + " upload unsuccessful: " + e.getMessage();
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + message + " \"");
+                response = new Response(e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
 
-        message = "Please upload a CSV file";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( "\" message\": \"" + message + " \"");
+        response = new Response("Please upload a CSV file");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( response);
     }
 
     /**
@@ -86,10 +87,12 @@ public class UserController {
     @GetMapping(path = "{id}")
     public ResponseEntity<?> fetchUser(@PathVariable String id) {
         User user;
+        Response response;
         try {
             user = userService.getUser(id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + "\"");
+            response = new Response(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -101,19 +104,23 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
+        Response response;
         try {
             userService.createUser(user);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
 
             if (errorMessage.contains("LOGIN")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"Employee login not unique\"");
+                response = new Response("Employee login not unique");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             } else if (e instanceof IllegalStateException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + "\"");
+                response = new Response(e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("\" message\": \"Successfully created\"");
+        response = new Response("Successfully created");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -122,13 +129,16 @@ public class UserController {
      * @return response 200 if user exists
      */
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Response> deleteUser(@PathVariable String id) {
+        Response response;
         try {
             userService.deleteUser(id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\" message\": \"" + e.getMessage() + " \"");
+            response = new Response(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("\" message \": \"Successfully deleted\" ");
+        response = new Response("Successfully deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
