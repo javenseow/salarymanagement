@@ -33,7 +33,7 @@ public class UserService {
         try {
             List<User> users = UserHelper.csvToUser(file.getInputStream());
             if (checkDuplicates(users)) {
-                throw new IOException("duplicate row");
+                throw new IOException(Response.DUPLICATE_ROW);
             }
 
             boolean updates = checkDataCreated(users);
@@ -42,7 +42,7 @@ public class UserService {
 
             return updates;
         } catch (IOException e) {
-            throw new RuntimeException("fail to store csv data: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -129,7 +129,7 @@ public class UserService {
 
         // Check if salary is valid i.e >= 0
         if (!UserHelper.checkSalary(user.getSalary())) {
-            throw new IllegalStateException("Invalid salary");
+            throw new IllegalStateException(Response.INVALID_SALARY);
         }
 
         userRepository.save(user);

@@ -17,6 +17,8 @@ import java.util.List;
 @RequestMapping(path = "users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
+    public static final String LOGIN = "LOGIN";
+
     @Autowired
     private UserService userService;
 
@@ -31,10 +33,10 @@ public class UserController {
         if (UserHelper.hasCSVFormat(file)) {
             try {
                 if (userService.upload(file)) {
-                    response = new Response("Success with data created or updated");
+                    response = new Response(Response.SUCCESS_WITH_CREATE_OR_UPDATE);
                     return ResponseEntity.status(HttpStatus.CREATED).body(response);
                 } else {
-                    response = new Response("Success with no data update");
+                    response = new Response(Response.SUCCESS_WITHOUT_UPDATE);
                     return ResponseEntity.status(HttpStatus.OK).body(response);
                 }
             } catch (Exception e) {
@@ -109,8 +111,8 @@ public class UserController {
         } catch (Exception e) {
             String errorMessage = e.getMessage();
 
-            if (errorMessage.contains("LOGIN")) {
-                response = new Response("Employee login not unique");
+            if (errorMessage.contains(LOGIN)) {
+                response = new Response(Response.LOGIN_NOT_UNIQUE);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             } else if (e instanceof IllegalStateException) {
                 response = new Response(e.getMessage());
@@ -118,7 +120,7 @@ public class UserController {
             }
         }
 
-        response = new Response("Successfully created");
+        response = new Response(Response.CREATE_SUCCESS);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -137,7 +139,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        response = new Response("Successfully deleted");
+        response = new Response(Response.DELETE_SUCCESS);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PutMapping(path = "{id}")
     public ResponseEntity<Response> updateUser(@PathVariable String id, @RequestBody User user) {
         Response response;
@@ -145,7 +150,7 @@ public class UserController {
             userService.updateUser(id, user);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if (errorMessage.contains("LOGIN")) {
+            if (errorMessage.contains(LOGIN)) {
                 response = new Response(Response.LOGIN_NOT_UNIQUE);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             } else {
