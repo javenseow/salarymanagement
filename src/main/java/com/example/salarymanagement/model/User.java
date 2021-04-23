@@ -9,10 +9,13 @@ import java.util.Comparator;
 public class User {
     @Id
     private String id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String login;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Double salary;
+    @Column(nullable = false)
     private LocalDate startDate;
 
     public User() {
@@ -38,6 +41,10 @@ public class User {
         this.salary = salary;
     }
 
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
     public String getLogin() {
         return login;
     }
@@ -52,6 +59,10 @@ public class User {
 
     public String getId() {
         return id;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
     @Override

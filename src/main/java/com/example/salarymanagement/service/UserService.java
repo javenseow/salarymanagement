@@ -1,5 +1,6 @@
 package com.example.salarymanagement.service;
 
+import com.example.salarymanagement.helper.Response;
 import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.repository.UserRepository;
@@ -25,7 +26,7 @@ public class UserService {
 
     /**
      * Uploads CSV file to repository, saving data into the database
-     * @param file
+     * @param file CSV file to be uploaded
      * @return true if there was an update done, false otherwise
      */
     public boolean upload(MultipartFile file) {
@@ -47,7 +48,7 @@ public class UserService {
 
     /**
      * Checks for duplicate rows in CSV given
-     * @param users
+     * @param users list of users to be checked
      * @return true if sizes are not the same, false otherwise
      */
     private boolean checkDuplicates(List<User> users) {
@@ -57,7 +58,7 @@ public class UserService {
 
     /**
      * Checks if data was created in the database
-     * @param users
+     * @param users list of users to be checked
      * @return true is data is created, false otherwise
      */
     private boolean checkDataCreated(List<User> users) {
@@ -76,9 +77,8 @@ public class UserService {
      */
     public List<User> getUsers(Double minSalary, Double maxSalary, Integer offset, Integer limit) {
         List<User> allUsers = userRepository.findAll();
-        List<User> finalUsers = UserHelper.processUsers(allUsers, minSalary, maxSalary, offset, limit);
 
-        return finalUsers;
+        return UserHelper.processUsers(allUsers, minSalary, maxSalary, offset, limit);
     }
 
     /**
@@ -87,10 +87,8 @@ public class UserService {
      * @return user object
      */
     public User getUser(String id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("no such employee"));
-
-        return user;
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(Response.NO_SUCH_EMPLOYEE));
     }
 
     /**
@@ -98,10 +96,10 @@ public class UserService {
      * @param user employee to be added
      */
     public void createUser(User user) {
-        Optional<User>userOptional = userRepository.findById(user.getId());
+        Optional<User> userOptional = userRepository.findById(user.getId());
 
         if (userOptional.isPresent()) {
-            throw new IllegalStateException("Employee ID already exists");
+            throw new IllegalStateException(Response.EMPLOYEE_ID_EXISTS);
         }
 
         userRepository.save(user);
@@ -113,9 +111,27 @@ public class UserService {
      */
     public void deleteUser(String id) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalStateException("No such employee");
+            throw new IllegalStateException(Response.NO_SUCH_EMPLOYEE);
         }
 
         userRepository.deleteById(id);
+    }
+
+    /**
+     * Updates the information of an existing user based on given id
+     * @param id employee id
+     * @param user employee details to be updated
+     */
+    public void updateUser(String id, User user) {
+        // Check if employee exists
+        userRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(Response.NO_SUCH_EMPLOYEE));
+
+        // Check if salary is valid i.e >= 0
+        if (!UserHelper.checkSalary(user.getSalary())) {
+            throw new IllegalStateException("Invalid salary");
+        }
+
+        userRepository.save(user);
     }
 }

@@ -44,7 +44,7 @@ public class UserHelper {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (checkSalary(values[3])) {
+                if (checkSalary(Double.parseDouble(values[3]))) {
                     users.add(new User(values[0], values[1], values[2], Double.parseDouble(values[3]), LocalDate.parse(values[4], formatter)));
                 }
                 else {
@@ -63,13 +63,8 @@ public class UserHelper {
      * @param salary salary of the user
      * @return true if salary is more than or equal 0, false otherwise
      */
-    private static boolean checkSalary (String salary) {
-        double numSalary = Double.parseDouble(salary);
-        return numSalary >= 0;
-    }
-
-    public static void checkInput() {
-
+    public static boolean checkSalary (Double salary) {
+        return salary >= 0;
     }
 
     /**

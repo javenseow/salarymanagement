@@ -20,7 +20,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
     /**
      * [POST] To upload a CSV file of users
      * @param file csv file
@@ -45,7 +44,7 @@ public class UserController {
         }
 
         response = new Response("Please upload a CSV file");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     /**
@@ -139,6 +138,23 @@ public class UserController {
         }
 
         response = new Response("Successfully deleted");
+    @PutMapping(path = "{id}")
+    public ResponseEntity<Response> updateUser(@PathVariable String id, @RequestBody User user) {
+        Response response;
+        try {
+            userService.updateUser(id, user);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("LOGIN")) {
+                response = new Response(Response.LOGIN_NOT_UNIQUE);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            } else {
+                response = new Response(errorMessage);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }
+
+        response = new Response(Response.UPDATE_SUCCESS);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
