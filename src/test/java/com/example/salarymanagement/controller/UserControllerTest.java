@@ -38,7 +38,7 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
-    
+
     @Test
     void uploadUsers_shouldReturnStatus400WhenCSVFileUploadedWithCreationOrUpdates() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/csv", "some xml".getBytes());
@@ -66,6 +66,7 @@ class UserControllerTest {
     @Test
     void uploadUsers_shouldReturnStatus400WhenNonCSVFileUploaded() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/plain", "some xml".getBytes());
+        Mockito.doThrow(new RuntimeException(Response.INVALID_CSV)).when(userService).upload(file);
 
         mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
                 .file(file))
