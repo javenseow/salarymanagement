@@ -83,6 +83,16 @@ public class UserService {
      * @return a list of users that fulfills the parameters given
      */
     public List<User> getUsers(Double minSalary, Double maxSalary, Integer offset, Integer limit) {
+        if (!UserHelper.isValidSalary(minSalary)) {
+            throw new IllegalStateException(Response.INVALID_MIN_SALARY);
+        } else if (!UserHelper.isValidSalary(maxSalary)) {
+            throw new IllegalStateException(Response.INVALID_MAX_SALARY);
+        } else if (!UserHelper.isParamMoreThanZero(offset)) {
+            throw new IllegalStateException(Response.INVALID_OFFSET);
+        } else if (!UserHelper.isParamMoreThanZero(limit)) {
+            throw new IllegalStateException(Response.INVALID_LIMIT);
+        }
+
         List<User> allUsers = userRepository.findAll();
 
         return UserHelper.processUsers(allUsers, minSalary, maxSalary, offset, limit);

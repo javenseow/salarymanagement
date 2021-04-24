@@ -63,8 +63,17 @@ public class UserHelper {
      * @param salary salary of the user
      * @return true if salary is more than or equal 0, false otherwise
      */
-    public static boolean isValidSalary (Double salary) {
+    public static boolean isValidSalary(Double salary) {
         return salary >= 0;
+    }
+
+    /**
+     * Checks if an Integer parameter is more than or equal to 0
+     * @param parameter parameter to be checked
+     * @return true if is more than or equal 0, false otherwise
+     */
+    public static boolean isParamMoreThanZero(Integer parameter) {
+        return parameter >= 0;
     }
 
     /**
