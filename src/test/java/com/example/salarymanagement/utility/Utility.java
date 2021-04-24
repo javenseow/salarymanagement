@@ -16,6 +16,12 @@ public class Utility {
             2500.0,
             LocalDate.parse("2001-11-16"));
 
+    public static User invalidUser = new User("e1000",
+            "hpotter",
+            "Harry Potter",
+            2500.0,
+            LocalDate.parse("2001-11-16"));
+
     public static User invalidSalaryUser = new User("e0001",
             "hpotter",
             "Hatty Potter",

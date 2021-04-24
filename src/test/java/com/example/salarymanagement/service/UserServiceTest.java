@@ -111,7 +111,50 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_shouldUpdateSuccessfullyWithValidIDAndUser() {
+        Mockito.when(userRepository.existsById(Utility.validId)).thenReturn(true);
+        userService.updateUser(Utility.validId, Utility.validUser);
+
+        Mockito.verify(userRepository, Mockito.times(1)).save(Utility.validUser);
+    }
+
+    @Test
+    void updateUser_shouldThrowExceptionWithInvalidIDButUser() {
+        Mockito.when(userRepository.existsById(Utility.invalidId)).thenReturn(false);
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.updateUser(Utility.invalidId, Utility.invalidUser);
+        });
+
+        String expectedMessage = Response.NO_SUCH_EMPLOYEE;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void updateUser_shouldThrowExceptionWithValidIDButDifferentIDUser() {
+        Mockito.when(userRepository.existsById(Utility.validId)).thenReturn(true);
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.updateUser(Utility.validId, Utility.invalidUser);
+        });
+
+        String expectedMessage = Response.DIFFERENT_ID;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void updateUser_shouldThrowExceptionWithValidIDButInvalidSalaryUser() {
+        Mockito.when(userRepository.existsById(Utility.validId)).thenReturn(true);
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.updateUser(Utility.validId, Utility.invalidSalaryUser);
+        });
+
+        String expectedMessage = Response.INVALID_SALARY;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
     }
 
     @Test
