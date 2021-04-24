@@ -1,6 +1,7 @@
 package com.example.salarymanagement.controller;
 
 import com.example.salarymanagement.helper.Response;
+import com.example.salarymanagement.helper.Results;
 import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.service.UserService;
@@ -58,7 +59,7 @@ public class UserController {
      * @return Response of 200 with list of user
      */
     @GetMapping
-    public ResponseEntity<String> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
+    public ResponseEntity<?> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
         if (minSalary == null) {
             minSalary = 0.0;
         }
@@ -77,7 +78,8 @@ public class UserController {
 
         List<User> results = userService.getUsers(minSalary, maxSalary, offset, limit);
 
-        return ResponseEntity.status(HttpStatus.OK).body("\" results\": " + results);
+        Results responseResults = new Results(results);
+        return ResponseEntity.status(HttpStatus.OK).body(responseResults);
     }
 
     /**

@@ -1,10 +1,11 @@
 package com.example.salarymanagement.controller;
 
 import com.example.salarymanagement.helper.Response;
+import com.example.salarymanagement.helper.Results;
 import com.example.salarymanagement.model.User;
-import com.example.salarymanagement.repository.UserRepository;
 import com.example.salarymanagement.service.UserService;
 import com.example.salarymanagement.utility.Utility;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,11 +33,111 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private UserService userService;
 
-    @MockBean
-    private UserRepository userRepository;
+    @Test
+    void fetchUsers_shouldReturnUsersWithoutParams() throws Exception {
+        List<User> users = Utility.fullUserList;
+        Double minSalary = 0.0;
+        Double maxSalary = 4000.0;
+        Integer offset = 0;
+        Integer limit = 0;
+        Mockito.when(userService.getUsers(minSalary, maxSalary, offset, limit)).thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Results results = new Results(users);
+
+        assertEquals(objectMapper.writeValueAsString(results), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void fetchUsers_shouldReturnUsersWithMinSalary() throws Exception {
+        List<User> users = Utility.userListWithValidUser2;
+
+        Double minSalary = 3000.0;
+        Double maxSalary = 4000.0;
+        Integer offset = 0;
+        Integer limit = 0;
+        Mockito.when(userService.getUsers(minSalary, maxSalary, offset, limit)).thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/users/?minSalary=3000"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Results results = new Results(users);
+
+        assertEquals(objectMapper.writeValueAsString(results), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void fetchUsers_shouldReturnUsersWithMaxSalary() throws Exception {
+        List<User> users = Utility.userListWithValidUser;
+
+        Double minSalary = 0.0;
+        Double maxSalary = 2999.0;
+        Integer offset = 0;
+        Integer limit = 0;
+        Mockito.when(userService.getUsers(minSalary, maxSalary, offset, limit)).thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/users/?maxSalary=2999"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Results results = new Results(users);
+
+        assertEquals(objectMapper.writeValueAsString(results), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void fetchUsers_shouldReturnUsersWithOffset() throws Exception {
+        List<User> users = Utility.userListWithValidUser2;
+
+        Double minSalary = 0.0;
+        Double maxSalary = 4000.0;
+        Integer offset = 1;
+        Integer limit = 0;
+        Mockito.when(userService.getUsers(minSalary, maxSalary, offset, limit)).thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/users/?offset=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Results results = new Results(users);
+
+        assertEquals(objectMapper.writeValueAsString(results), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void fetchUsers_shouldReturnUsersWithLimit() throws Exception {
+        List<User> users = Utility.userListWithValidUser;
+
+        Double minSalary = 0.0;
+        Double maxSalary = 4000.0;
+        Integer offset = 0;
+        Integer limit = 1;
+        Mockito.when(userService.getUsers(minSalary, maxSalary, offset, limit)).thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/users/?limit=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Results results = new Results(users);
+
+        assertEquals(objectMapper.writeValueAsString(results), result.getResponse().getContentAsString());
+    }
+
     @Test
     void fetchUser_shouldReturnStatus200WithValidId() throws Exception {
         User validUser = Utility.validUser;
