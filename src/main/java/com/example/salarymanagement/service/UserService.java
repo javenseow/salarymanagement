@@ -32,15 +32,17 @@ public class UserService {
     public boolean upload(MultipartFile file) {
         try {
             List<User> users = UserHelper.csvToUser(file.getInputStream());
+            // Check if there are duplicate rows in the CSV file
             if (checkDuplicates(users)) {
                 throw new IOException(Response.DUPLICATE_ROW);
             }
 
-            boolean updates = checkDataCreated(users);
+            // Check if there is any data that needs to be created
+            boolean changed = checkDataChanged(users);
 
             userRepository.saveAll(users);
 
-            return updates;
+            return changed;
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -57,11 +59,11 @@ public class UserService {
     }
 
     /**
-     * Checks if data was created in the database
+     * Checks if data was changed (updated or created) in the database
      * @param users list of users to be checked
-     * @return true is data is created, false otherwise
+     * @return true is data is changed, false otherwise
      */
-    private boolean checkDataCreated(List<User> users) {
+    private boolean checkDataChanged(List<User> users) {
         List<User> usersInDB = userRepository.findAll();
 
         return !users.equals(usersInDB);
@@ -98,8 +100,14 @@ public class UserService {
     public void createUser(User user) {
         Optional<User> userOptional = userRepository.findById(user.getId());
 
+        // Check if user id is used
         if (userOptional.isPresent()) {
             throw new IllegalStateException(Response.EMPLOYEE_ID_EXISTS);
+        }
+
+        // Check if salary is valid i.e >= 0
+        if (!UserHelper.checkSalary(user.getSalary())) {
+            throw new IllegalStateException(Response.INVALID_SALARY);
         }
 
         userRepository.save(user);
@@ -110,6 +118,7 @@ public class UserService {
      * @param id employee id
      */
     public void deleteUser(String id) {
+        // Check if employee exists
         if (!userRepository.existsById(id)) {
             throw new IllegalStateException(Response.NO_SUCH_EMPLOYEE);
         }
