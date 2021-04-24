@@ -1,12 +1,14 @@
 package com.example.salarymanagement.service;
 
 import com.example.salarymanagement.helper.Response;
+import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.repository.UserRepository;
 import com.example.salarymanagement.utility.Utility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +24,9 @@ class UserServiceTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @Mock
+    private UserHelper userHelper;
 
     @InjectMocks
     private UserService userService;
@@ -42,6 +47,42 @@ class UserServiceTest {
         });
 
         String expectedMessage = Response.NO_SUCH_EMPLOYEE;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void createUser_shouldCreateSuccessfullyWithValidUser() {
+        Mockito.when(userRepository.findById(Utility.validId)).thenReturn(Optional.empty());
+        userService.createUser(Utility.validUser);
+
+        Mockito.verify(userRepository, Mockito.times(1)).save(Utility.validUser);
+    }
+
+    @Test
+    void createUser_shouldThrowExceptionWithExistingID() {
+        Mockito.when(userRepository.findById(Utility.validId)).thenReturn(Optional.of(Utility.validUser));
+
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.createUser(Utility.validUser);
+        });
+
+        String expectedMessage = Response.EMPLOYEE_ID_EXISTS;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void createUser_shouldThrowExceptionWithInvalidSalary() {
+        Mockito.when(userRepository.findById(Utility.validId)).thenReturn(Optional.empty());
+
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.createUser(Utility.invalidSalaryUser);
+        });
+
+        String expectedMessage = Response.INVALID_SALARY;
         String actualMessage = e.getMessage();
 
         assertTrue(expectedMessage.contains(actualMessage));
