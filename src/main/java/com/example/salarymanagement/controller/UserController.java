@@ -113,11 +113,10 @@ public class UserController {
 
             if (errorMessage.contains(LOGIN)) {
                 response = new Response(Response.LOGIN_NOT_UNIQUE);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            } else if (e instanceof IllegalStateException) {
-                response = new Response(e.getMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            } else {
+                response = new Response(errorMessage);
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         response = new Response(Response.CREATE_SUCCESS);
@@ -143,6 +142,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    /**
+     * [PUT] Updates the user information of an existing user
+     * @param id employee id
+     * @param user user information
+     * @return response 200 if update was successful
+     */
     @PutMapping(path = "{id}")
     public ResponseEntity<Response> updateUser(@PathVariable String id, @RequestBody User user) {
         Response response;
@@ -152,11 +157,10 @@ public class UserController {
             String errorMessage = e.getMessage();
             if (errorMessage.contains(LOGIN)) {
                 response = new Response(Response.LOGIN_NOT_UNIQUE);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             } else {
                 response = new Response(errorMessage);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         response = new Response(Response.UPDATE_SUCCESS);
