@@ -138,8 +138,14 @@ public class UserService {
      */
     public void updateUser(String id, User user) {
         // Check if employee exists
-        userRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(Response.NO_SUCH_EMPLOYEE));
+        if (!userRepository.existsById(id)) {
+            throw new IllegalStateException(Response.NO_SUCH_EMPLOYEE);
+        }
+
+        // Check if id and id of user are the same
+        if (!id.equals(user.getId())) {
+            throw new IllegalStateException(Response.DIFFERENT_ID);
+        }
 
         // Check if salary is valid i.e >= 0
         if (!UserHelper.isValidSalary(user.getSalary())) {

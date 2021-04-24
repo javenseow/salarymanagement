@@ -19,6 +19,7 @@ public class Response {
     public static final String INVALID_NAME = "Invalid name";
     public static final String INVALID_ID = "Invalid id";
     public static final String INVALID_LOGIN = "Invalid login";
+    public static final String DIFFERENT_ID = "Different id";
 
     public static final String INVALID_CSV = "File not in CSV";
 
