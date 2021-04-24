@@ -19,6 +19,11 @@ public class UserController {
 
     public static final String LOGIN = "LOGIN";
 
+    public static final Double MIN_SALARY = 0.0;
+    public static final Double MAX_SALARY = 4000.0;
+    public static final Integer OFFSET = 0;
+    public static final Integer LIMIT = 0;
+
     @Autowired
     private UserService userService;
 
@@ -55,19 +60,19 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
         if (minSalary == null) {
-            minSalary = 0.0;
+            minSalary = MIN_SALARY;
         }
 
         if (maxSalary == null) {
-            maxSalary = 4000.0;
+            maxSalary = MAX_SALARY;
         }
 
         if (offset == null) {
-            offset = 0;
+            offset = OFFSET;
         }
 
         if (limit == null) {
-            limit = 0;
+            limit = LIMIT;
         }
 
         List<User> results = userService.getUsers(minSalary, maxSalary, offset, limit);
