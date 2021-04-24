@@ -30,17 +30,22 @@ public class UserService {
      * @return true if there was an update done, false otherwise
      */
     public boolean upload(MultipartFile file) {
+        boolean changed = false;
         try {
-            List<User> users = UserHelper.csvToUser(file.getInputStream());
-            // Check if there are duplicate rows in the CSV file
-            if (checkDuplicates(users)) {
-                throw new IOException(Response.DUPLICATE_ROW);
+            if (UserHelper.hasCSVFormat(file)) {
+                List<User> users = UserHelper.csvToUser(file.getInputStream());
+                // Check if there are duplicate rows in the CSV file
+                if (checkDuplicates(users)) {
+                    throw new IOException(Response.DUPLICATE_ROW);
+                }
+
+                // Check if there is any data that needs to be created
+                changed = checkDataChanged(users);
+
+                userRepository.saveAll(users);
+            } else {
+                throw new IOException(Response.INVALID_CSV);
             }
-
-            // Check if there is any data that needs to be created
-            boolean changed = checkDataChanged(users);
-
-            userRepository.saveAll(users);
 
             return changed;
         } catch (IOException e) {

@@ -2,7 +2,6 @@ package com.example.salarymanagement.controller;
 
 import com.example.salarymanagement.helper.Response;
 import com.example.salarymanagement.helper.Results;
-import com.example.salarymanagement.helper.UserHelper;
 import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +30,18 @@ public class UserController {
     @PostMapping(path = "/upload")
     public ResponseEntity<Response> uploadUsers(@RequestParam("file") MultipartFile file) {
         Response response;
-        if (UserHelper.hasCSVFormat(file)) {
-            try {
-                if (userService.upload(file)) {
-                    response = new Response(Response.SUCCESS_WITH_CREATE_OR_UPDATE);
-                    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-                } else {
-                    response = new Response(Response.SUCCESS_WITHOUT_UPDATE);
-                    return ResponseEntity.status(HttpStatus.OK).body(response);
-                }
-            } catch (Exception e) {
-                response = new Response(e.getMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        try {
+            if (userService.upload(file)) {
+                response = new Response(Response.SUCCESS_WITH_CREATE_OR_UPDATE);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } else {
+                response = new Response(Response.SUCCESS_WITHOUT_UPDATE);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
             }
+        } catch (Exception e) {
+            response = new Response(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
-        response = new Response(Response.INVALID_CSV);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     /**
