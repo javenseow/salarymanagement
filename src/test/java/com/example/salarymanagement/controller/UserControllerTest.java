@@ -34,6 +34,31 @@ class UserControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+    @Test
+    void fetchUser_shouldReturnStatus200WithValidId() throws Exception {
+        User validUser = Utility.validUser;
+        Mockito.when(userService.getUser(Utility.validId)).thenReturn(validUser);
+
+        MvcResult result = mvc.perform(get("/users/" + Utility.validId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertEquals(validUser.toString(), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void fetchUser_shouldReturnStatus400WithNonExistingId() throws Exception {
+        Mockito.doThrow(new IllegalStateException(Response.NO_SUCH_EMPLOYEE))
+                .when(userService)
+                .getUser(Utility.invalidId);
+
+        mvc.perform(get("/users/" + Utility.invalidId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.NO_SUCH_EMPLOYEE)));
+
+    }
 
     @Test
     void createUser_shouldReturnStatus201WithValidUser() throws Exception {
