@@ -14,15 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +38,40 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+    
+    @Test
+    void uploadUsers_shouldReturnStatus400WhenCSVFileUploadedWithCreationOrUpdates() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/csv", "some xml".getBytes());
+        Mockito.when(userService.upload(file)).thenReturn(true);
+
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
+                .file(file))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message", Matchers.is(Response.SUCCESS_WITH_CREATE_OR_UPDATE)));
+    }
+
+    @Test
+    void uploadUsers_shouldReturnStatus400WhenCSVFileUploadedWithoutCreationOrUpdates() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/csv", "some xml".getBytes());
+        Mockito.when(userService.upload(file)).thenReturn(false);
+
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
+                .file(file))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", Matchers.is(Response.SUCCESS_WITHOUT_UPDATE)));
+    }
+
+    @Test
+    void uploadUsers_shouldReturnStatus400WhenNonCSVFileUploaded() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/plain", "some xml".getBytes());
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
+                .file(file))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", Matchers.is(Response.INVALID_CSV)));
+    }
 
     @Test
     void fetchUsers_shouldReturnUsersWithoutParams() throws Exception {

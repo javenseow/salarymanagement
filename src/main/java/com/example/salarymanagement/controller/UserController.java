@@ -46,7 +46,7 @@ public class UserController {
             }
         }
 
-        response = new Response("Please upload a CSV file");
+        response = new Response(Response.INVALID_CSV);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

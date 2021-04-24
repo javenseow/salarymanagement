@@ -20,6 +20,8 @@ public class Response {
     public static final String INVALID_ID = "Invalid id";
     public static final String INVALID_LOGIN = "Invalid login";
 
+    public static final String INVALID_CSV = "File not in CSV";
+
     private String message;
 
     public Response(String message) {
