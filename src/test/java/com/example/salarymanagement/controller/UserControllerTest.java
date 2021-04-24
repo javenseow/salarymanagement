@@ -74,14 +74,14 @@ class UserControllerTest {
 
     @Test
     void createUser_shouldReturnStatus400WithExistingId() throws Exception {
-        User user1 = Utility.validUser;
+        User user = Utility.validUser;
         Mockito.doThrow(new IllegalStateException(Response.EMPLOYEE_ID_EXISTS))
                 .when(userService)
-                .createUser(user1);
+                .createUser(user);
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(user1.toString()))
+                .content(user.toString()))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", Matchers.is(Response.EMPLOYEE_ID_EXISTS)));
@@ -104,14 +104,14 @@ class UserControllerTest {
 
     @Test
     void createUser_shouldReturnStatus400WithNonUniqueLogin() throws Exception {
-        User user1 = Utility.validUser;
+        User user = Utility.validUser;
         Mockito.doThrow(new RuntimeException(UserController.LOGIN))
                 .when(userService)
-                .createUser(user1);
+                .createUser(user);
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(user1.toString()))
+                .content(user.toString()))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", Matchers.is(Response.LOGIN_NOT_UNIQUE)));
@@ -138,6 +138,59 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_shouldReturnStatus201WithValidUser() throws Exception {
+        User user = Utility.validUser;
+
+        mvc.perform(put("/users/" + Utility.validId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(user.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.UPDATE_SUCCESS)));
+    }
+
+    @Test
+    void updateUser_shouldReturnStatus400WithNonExistingId() throws Exception {
+        User user = Utility.validUser;
+        Mockito.doThrow(new IllegalStateException(Response.NO_SUCH_EMPLOYEE))
+                .when(userService)
+                .updateUser(Utility.invalidId, user);
+
+        mvc.perform(put("/users/" + Utility.invalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(user.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.NO_SUCH_EMPLOYEE)));
+    }
+
+    @Test
+    void updateUser_shouldReturnStatus400WithInvalidSalary() throws Exception {
+        User invalidSalaryUser = Utility.invalidSalaryUser;
+        Mockito.doThrow(new IllegalStateException(Response.INVALID_SALARY))
+                .when(userService)
+                .updateUser(Utility.validId, invalidSalaryUser);
+
+        mvc.perform(put("/users/" + Utility.validId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidSalaryUser.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.INVALID_SALARY)));
+    }
+
+    @Test
+    void updateUser_shouldReturnStatus400WithNonUniqueLogin() throws Exception {
+        User user = Utility.validUser;
+        Mockito.doThrow(new RuntimeException(UserController.LOGIN))
+                .when(userService)
+                .updateUser(Utility.validId, user);
+
+        mvc.perform(put("/users/" + Utility.validId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(user.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.LOGIN_NOT_UNIQUE)));
     }
 }
