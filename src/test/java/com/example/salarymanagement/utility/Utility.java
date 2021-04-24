@@ -5,7 +5,10 @@ import com.example.salarymanagement.model.User;
 import java.time.LocalDate;
 
 public class Utility {
-    public static User user1 = new User("e0001",
+    public static String validId = "e0001";
+    public static String invalidId = "e1000";
+
+    public static User validUser = new User("e0001",
             "hpotter",
             "Harry Potter",
             2500.0,

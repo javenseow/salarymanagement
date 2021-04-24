@@ -6,7 +6,6 @@ import com.example.salarymanagement.repository.UserRepository;
 import com.example.salarymanagement.service.UserService;
 import com.example.salarymanagement.utility.Utility;
 import org.hamcrest.Matchers;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -16,8 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -35,7 +37,7 @@ class UserControllerTest {
 
     @Test
     void createUser_shouldReturnStatus201WithValidUser() throws Exception {
-        User user = Utility.user1;
+        User user = Utility.validUser;
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,8 +49,10 @@ class UserControllerTest {
 
     @Test
     void createUser_shouldReturnStatus400WithExistingId() throws Exception {
-        User user1 = Utility.user1;
-        Mockito.doThrow(new IllegalStateException(Response.EMPLOYEE_ID_EXISTS)).when(userService).createUser(user1);
+        User user1 = Utility.validUser;
+        Mockito.doThrow(new IllegalStateException(Response.EMPLOYEE_ID_EXISTS))
+                .when(userService)
+                .createUser(user1);
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +65,9 @@ class UserControllerTest {
     @Test
     void createUser_shouldReturnStatus400WithInvalidSalary() throws Exception {
         User invalidSalaryUser = Utility.invalidSalaryUser;
-        Mockito.doThrow(new IllegalStateException(Response.INVALID_SALARY)).when(userService).createUser(invalidSalaryUser);
+        Mockito.doThrow(new IllegalStateException(Response.INVALID_SALARY))
+                .when(userService)
+                .createUser(invalidSalaryUser);
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -73,8 +79,10 @@ class UserControllerTest {
 
     @Test
     void createUser_shouldReturnStatus400WithNonUniqueLogin() throws Exception {
-        User user1 = Utility.user1;
-        Mockito.doThrow(new RuntimeException(UserController.LOGIN)).when(userService).createUser(user1);
+        User user1 = Utility.validUser;
+        Mockito.doThrow(new RuntimeException(UserController.LOGIN))
+                .when(userService)
+                .createUser(user1);
 
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)

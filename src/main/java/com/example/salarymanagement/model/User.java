@@ -67,11 +67,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "{\"id\": \"" + id + '\"' +
-                ", \"login\": \"" + login + '\"' +
-                ", \"name\": \"" + name + '\"' +
-                ", \"salary\": " + salary +
-                ", \"startDate\": \"" + startDate +
+        return "{\"id\":\"" + id + '\"' +
+                ",\"login\":\"" + login + '\"' +
+                ",\"name\":\"" + name + '\"' +
+                ",\"salary\":" + salary +
+                ",\"startDate\":\"" + startDate +
                 "\"}";
     }
 
