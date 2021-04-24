@@ -117,4 +117,27 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message", Matchers.is(Response.LOGIN_NOT_UNIQUE)));
     }
 
+    @Test
+    void deleteUser_shouldReturnStatus200WithValidId() throws Exception {
+        Mockito.doNothing().when(userService).deleteUser(Utility.validId);
+
+        mvc.perform(delete("/users/" + Utility.validId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.DELETE_SUCCESS)));
+    }
+
+    @Test
+    void deleteUser_shouldReturnStatus200WithInvalidId() throws Exception {
+        Mockito.doThrow(new IllegalStateException(Response.NO_SUCH_EMPLOYEE)).when(userService).deleteUser(Utility.invalidId);
+
+        mvc.perform(delete("/users/" + Utility.invalidId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", Matchers.is(Response.NO_SUCH_EMPLOYEE)));
+    }
+
+    @Test
+    void updateUser() {
+    }
 }
