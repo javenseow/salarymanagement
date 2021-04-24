@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,62 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Test
+    void getUsers_shouldReturnFullListWithDefaultParameters() {
+        Mockito.when(userRepository.findAll()).thenReturn(Utility.fullUserList);
+        List<User> result = userService.getUsers(Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
+
+        assertEquals(Utility.fullUserList, result);
+    }
+
+    @Test
+    void getUsers_shouldThrowExceptionWithInvalidMinSalary() {
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.getUsers(Utility.invalidSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
+        });
+
+        String expectedMessage = Response.INVALID_MIN_SALARY;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void getUsers_shouldThrowExceptionWithInvalidMaxSalary() {
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.getUsers(Utility.defaultMinSalary, Utility.invalidSalary, Utility.defaultOffset, Utility.defaultLimit);
+        });
+
+        String expectedMessage = Response.INVALID_MAX_SALARY;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void getUsers_shouldThrowExceptionWithInvalidOffset() {
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.getUsers(Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.invalidOffset, Utility.defaultLimit);
+        });
+
+        String expectedMessage = Response.INVALID_OFFSET;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void getUsers_shouldThrowExceptionWithInvalidLimit() {
+        Exception e = assertThrows(IllegalStateException.class, () -> {
+            userService.getUsers(Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.invalidLimit);
+        });
+
+        String expectedMessage = Response.INVALID_LIMIT;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
 
     @Test
     void getUser_shouldReturnUserWithExistingID() {

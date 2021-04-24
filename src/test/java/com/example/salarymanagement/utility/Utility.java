@@ -10,6 +10,20 @@ public class Utility {
     public static String validId = "e0001";
     public static String invalidId = "e1000";
 
+    public static Double defaultMinSalary = 0.0;
+    public static Double defaultMaxSalary = 4000.0;
+    public static Integer defaultOffset = 0;
+    public static Integer defaultLimit = 0;
+
+    public static Double validMinSalary = 3000.0;
+    public static Double validMaxSalary = 2999.0;
+    public static Integer validOffset = 1;
+    public static Integer validLimit = 1;
+
+    public static Double invalidSalary = -50.0;
+    public static Integer invalidOffset = -1;
+    public static Integer invalidLimit = -1;
+
     public static User validUser = new User("e0001",
             "hpotter",
             "Harry Potter",
