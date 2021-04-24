@@ -111,7 +111,7 @@ public class UserService {
         }
 
         // Check if salary is valid i.e >= 0
-        if (!UserHelper.checkSalary(user.getSalary())) {
+        if (!UserHelper.isValidSalary(user.getSalary())) {
             throw new IllegalStateException(Response.INVALID_SALARY);
         }
 
@@ -142,7 +142,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException(Response.NO_SUCH_EMPLOYEE));
 
         // Check if salary is valid i.e >= 0
-        if (!UserHelper.checkSalary(user.getSalary())) {
+        if (!UserHelper.isValidSalary(user.getSalary())) {
             throw new IllegalStateException(Response.INVALID_SALARY);
         }
 
