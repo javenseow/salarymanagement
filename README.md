@@ -1,4 +1,6 @@
 # salarymanagement
+<h3>Environment</h3>
+At least JDK11
  
 <h3>Build and Test</h3>
 The building and testing of the application is done simultaneously using the following command: 
