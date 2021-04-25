@@ -43,7 +43,18 @@ public class UserHelper {
             // Ignore header
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
+                // Ignore line if line starts with #
+                if(line.charAt(0) == '#') {
+                    continue;
+                }
                 String[] values = line.split(",");
+
+                // Throws exception if not all 5 columns are filled
+                if (values.length != 5) {
+                    throw new IOException(Response.INVALID_ROW);
+                }
+
+                // Checks if salary is valid i.e >= 0
                 if (isValidSalary(Double.parseDouble(values[3]))) {
                     users.add(new User(values[0], values[1], values[2], Double.parseDouble(values[3]), LocalDate.parse(values[4], formatter)));
                 }
@@ -54,7 +65,7 @@ public class UserHelper {
 
             return users;
         } catch (IOException e) {
-            throw new RuntimeException("Fail to parse CSV file: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 

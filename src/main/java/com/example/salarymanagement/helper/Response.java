@@ -15,6 +15,7 @@ public class Response {
 
     public static final String INVALID_SALARY = "Invalid salary";
     public static final String DUPLICATE_ROW = "Duplicate Row";
+    public static final String INVALID_ROW = "Invalid Row";
     public static final String INVALID_DATE = "Invalid date";
     public static final String INVALID_NAME = "Invalid name";
     public static final String INVALID_ID = "Invalid id";

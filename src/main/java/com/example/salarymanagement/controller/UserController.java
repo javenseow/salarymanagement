@@ -44,7 +44,14 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             }
         } catch (Exception e) {
-            response = new Response(e.getMessage());
+            String message = e.getMessage();
+
+            if (message.contains("LOGIN")) {
+                response = new Response(Response.LOGIN_NOT_UNIQUE);
+            } else {
+                response = new Response(e.getMessage());
+            }
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
