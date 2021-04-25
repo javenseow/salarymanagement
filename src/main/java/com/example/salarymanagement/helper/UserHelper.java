@@ -17,6 +17,8 @@ import java.util.List;
 @Component
 public class UserHelper {
     public static String TYPE = "text/csv";
+    public static String STRING = "string";
+    public static String TEXT = "Text";
 
     /**
      * Checks if the file is of CSV format
@@ -50,22 +52,30 @@ public class UserHelper {
                 String[] values = line.split(",");
 
                 // Throws exception if not all 5 columns are filled
-                if (values.length != 5) {
-                    throw new IOException(Response.INVALID_ROW);
+                for (String value: values) {
+                    if (value.equals("")) {
+                        throw new IOException(Response.INVALID_ROW);
+                    }
                 }
 
                 // Checks if salary is valid i.e >= 0
                 if (isValidSalary(Double.parseDouble(values[3]))) {
                     users.add(new User(values[0], values[1], values[2], Double.parseDouble(values[3]), LocalDate.parse(values[4], formatter)));
-                }
-                else {
+                } else {
                     throw new IOException(Response.INVALID_SALARY);
                 }
             }
 
             return users;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            String message = e.getMessage();
+
+            if (message.contains(STRING)) {
+                throw new RuntimeException(Response.INVALID_SALARY);
+            } else if (message.contains(TEXT)) {
+                throw new RuntimeException(Response.INVALID_DATE);
+            }
+            throw new RuntimeException(message);
         }
     }
 
@@ -108,6 +118,9 @@ public class UserHelper {
             }
         }
 
+        // Sort by employee id in ascending order
+        Collections.sort(intermediateUsers, User.UserComparator);
+
         // Check if limit is 0, if yes then use full list size, else use limit as max size
         if (limit > 0) {
             for (int i = offset; i < limit; i++) {
@@ -118,9 +131,6 @@ public class UserHelper {
                 finalUsers.add(intermediateUsers.get(i));
             }
         }
-
-        // Sort by employee id in ascending order
-        Collections.sort(finalUsers, User.UserComparator);
 
         return finalUsers;
     }
