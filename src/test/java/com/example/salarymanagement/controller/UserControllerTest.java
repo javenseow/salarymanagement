@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -41,35 +40,32 @@ class UserControllerTest {
 
     @Test
     void uploadUsers_shouldReturnStatus400WhenCSVFileUploadedWithCreationOrUpdates() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/csv", "some xml".getBytes());
-        Mockito.when(userService.upload(file)).thenReturn(true);
+        Mockito.when(userService.upload(Utility.csvFile)).thenReturn(true);
 
 
         mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
-                .file(file))
+                .file(Utility.csvFile))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message", Matchers.is(Response.SUCCESS_WITH_CREATE_OR_UPDATE)));
     }
 
     @Test
     void uploadUsers_shouldReturnStatus400WhenCSVFileUploadedWithoutCreationOrUpdates() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/csv", "some xml".getBytes());
-        Mockito.when(userService.upload(file)).thenReturn(false);
+        Mockito.when(userService.upload(Utility.csvFile)).thenReturn(false);
 
 
         mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
-                .file(file))
+                .file(Utility.csvFile))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", Matchers.is(Response.SUCCESS_WITHOUT_UPDATE)));
     }
 
     @Test
     void uploadUsers_shouldReturnStatus400WhenNonCSVFileUploaded() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", "sample.txt", "text/plain", "some xml".getBytes());
-        Mockito.doThrow(new RuntimeException(Response.INVALID_CSV)).when(userService).upload(file);
+        Mockito.doThrow(new RuntimeException(Response.INVALID_CSV)).when(userService).upload(Utility.textFile);
 
         mvc.perform(MockMvcRequestBuilders.multipart("/users/upload")
-                .file(file))
+                .file(Utility.textFile))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", Matchers.is(Response.INVALID_CSV)));
     }

@@ -1,6 +1,7 @@
 package com.example.salarymanagement.utility;
 
 import com.example.salarymanagement.model.User;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,4 +54,17 @@ public class Utility {
     public static List<User> userListWithValidUser2 = new ArrayList<>(List.of(validUser2));
 
     public static List<User> userListWithValidUser = new ArrayList<>(List.of(validUser));
+
+    private static String csvContent = "id,login,name,salary,startDate\n" +
+        "e0001,hpotter,Harry Potter,2500.0,16-Nov-01\n" +
+        "e0002,rwesley,Ron Weasley,3000.50,2001-11-16";
+
+    private static String csvDuplicateContent = "id,login,name,salary,startDate\n" +
+            "e0001,hpotter,Harry Potter,1234.00,16-Nov-01\n" +
+            "e0001,hpotter,Harry Potter,1234.00,16-Nov-01";
+
+    public static MockMultipartFile csvFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvContent.getBytes());
+    public static MockMultipartFile csvDuplicateFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvDuplicateContent.getBytes());
+    public static MockMultipartFile textFile = new MockMultipartFile("file", "sample.txt", "text/plain", "some xml".getBytes());
+
 }
