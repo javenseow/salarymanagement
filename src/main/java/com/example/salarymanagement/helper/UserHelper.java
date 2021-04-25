@@ -48,7 +48,7 @@ public class UserHelper {
                     users.add(new User(values[0], values[1], values[2], Double.parseDouble(values[3]), LocalDate.parse(values[4], formatter)));
                 }
                 else {
-                    throw new IOException("invalid salary");
+                    throw new IOException(Response.INVALID_SALARY);
                 }
             }
 

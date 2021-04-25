@@ -93,6 +93,11 @@ public class User {
                 && (startDate.compareTo(u.startDate) == 0);
     }
 
+    @Override
+    public int hashCode() {
+        return id.hashCode() ^ login.hashCode() ^ name.hashCode() ^ salary.hashCode() ^ startDate.hashCode();
+    }
+
     public static Comparator<User> UserComparator = new Comparator<User>() {
         @Override
         public int compare(User o1, User o2) {
