@@ -60,4 +60,22 @@ class UserHelperTest {
         assertTrue(expectedMessage.contains(actualMessage));
     }
 
+    @Test
+    void isValidSalary_returnTrueWhenSalaryIsMoreThanZero() {
+        boolean result = UserHelper.isValidSalary(200.0);
+        assertTrue(result);
+    }
+
+    @Test
+    void isValidSalary_returnTrueWhenSalaryIsZero() {
+        boolean result = UserHelper.isValidSalary(0.0);
+        assertTrue(result);
+    }
+
+    @Test
+    void isValidSalary_returnFalseWhenSalaryIsLesserZero() {
+        boolean result = UserHelper.isValidSalary(-200.0);
+        assertFalse(result);
+    }
+
 }
