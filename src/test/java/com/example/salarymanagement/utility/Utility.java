@@ -72,7 +72,13 @@ public class Utility {
             "e0002,rwesley,Ron Weasley,-3000.50,2001-11-16";
 
     private static String csvInvalidRowContent = "id,login,name,salary,startDate\n" +
-            "e0002,rwesley,Ron Weasley, 2001-11-16";
+            "e0002,rwesley,Ron Weasley,,2001-11-16";
+
+    private static String csvNonNumberSalaryContent = "id,login,name,salary,startDate\n" +
+            "e0002,rwesley,Ron Weasley,a,2001-11-16";
+
+    private static String csvInvalidDateContent = "id,login,name,salary,startDate\n" +
+            "e0002,rwesley,Ron Weasley,123.00,a";
 
     public static MockMultipartFile csvFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvContent.getBytes());
     public static MockMultipartFile csvDuplicateFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvDuplicateContent.getBytes());
@@ -80,5 +86,7 @@ public class Utility {
     public static MockMultipartFile csvInvalidSalaryFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvInvalidSalaryContent.getBytes());
     public static MockMultipartFile csvFirstLineCommentedFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvFirstLineCommentedContent.getBytes());
     public static MockMultipartFile csvInvalidRowFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvInvalidRowContent.getBytes());
+    public static MockMultipartFile csvNonNumberSalaryFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvNonNumberSalaryContent.getBytes());
+    public static MockMultipartFile csvInvalidDateFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvInvalidDateContent.getBytes());
 
 }
