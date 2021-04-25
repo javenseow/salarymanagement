@@ -78,4 +78,22 @@ class UserHelperTest {
         assertFalse(result);
     }
 
+    @Test
+    void isParamMoreThanEqualZero_returnTrueWhenParamIsMoreThanZero() {
+        boolean result = UserHelper.isParamMoreThanEqualZero(2);
+        assertTrue(result);
+    }
+
+    @Test
+    void isParamMoreThanEqualZero_returnTrueWhenParamIsZero() {
+        boolean result = UserHelper.isParamMoreThanEqualZero(0);
+        assertTrue(result);
+    }
+
+    @Test
+    void isParamMoreThanEqualZero_returnFalseWhenParamIsLesserThanZero() {
+        boolean result = UserHelper.isParamMoreThanEqualZero(0);
+        assertTrue(result);
+    }
+
 }
