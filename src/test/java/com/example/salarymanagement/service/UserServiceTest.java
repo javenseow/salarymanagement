@@ -33,6 +33,49 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
+    void upload_shouldReturnTrueWhenValidCSVIsProvided() throws Exception {
+        boolean result = userService.upload(Utility.csvFile);
+
+        Mockito.verify(userRepository, Mockito.times(1))
+                .saveAll(UserHelper.csvToUser(Utility.csvFile.getInputStream()));
+        assertTrue(result);
+    }
+
+    @Test
+    void upload_shouldReturnFalseWhenNoUpdateIsDone() throws Exception {
+        Mockito.when(userRepository.findAll()).thenReturn(Utility.fullUserList);
+        boolean result = userService.upload(Utility.csvFile);
+
+        Mockito.verify(userRepository, Mockito.times(1))
+                .saveAll(UserHelper.csvToUser(Utility.csvFile.getInputStream()));
+        assertFalse(result);
+    }
+
+    @Test
+    void upload_shouldThrowExceptionWhenCSVWithDuplicateRowsIsProvided() throws Exception {
+        Exception e = assertThrows(RuntimeException.class, () -> {
+            userService.upload(Utility.csvDuplicateFile);
+        });
+
+        String expectedMessage = Response.DUPLICATE_ROW;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void upload_shouldThrowExceptionWhenNonCSVIsProvided() throws Exception {
+        Exception e = assertThrows(RuntimeException.class, () -> {
+            userService.upload(Utility.textFile);
+        });
+
+        String expectedMessage = Response.INVALID_CSV;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
     void getUsers_shouldReturnFullListWithDefaultParameters() {
         Mockito.when(userRepository.findAll()).thenReturn(Utility.fullUserList);
         List<User> result = userService.getUsers(Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
@@ -212,13 +255,5 @@ class UserServiceTest {
         String actualMessage = e.getMessage();
 
         assertTrue(expectedMessage.contains(actualMessage));
-    }
-
-    @Test
-    void checkDuplicates() {
-    }
-
-    @Test
-    void checkDataChanged(){
     }
 }
