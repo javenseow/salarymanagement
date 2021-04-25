@@ -32,7 +32,7 @@ public class UserHelper {
     /**
      * Converts CSV file to a list of user objects
      * @param is inputstream of csv file
-     * @return List of user objects
+     * @return list of user objects
      */
     public static List<User> csvToUser(InputStream is) {
         List<User> users = new ArrayList<>();

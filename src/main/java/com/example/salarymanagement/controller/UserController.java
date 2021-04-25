@@ -28,9 +28,9 @@ public class UserController {
     private UserService userService;
 
     /**
-     * [POST] To upload a CSV file of users
+     * [POST] Uploads a CSV file of users
      * @param file csv file
-     * @return Response of 200 if upload is successful without updates, 201 if upload was successful with data creation/updates, else 400
+     * @return Response of 200 if upload is successful without updates, 201 if upload was successful with data creation/updates
      */
     @PostMapping(path = "/upload")
     public ResponseEntity<Response> uploadUsers(@RequestParam("file") MultipartFile file) {
@@ -57,12 +57,12 @@ public class UserController {
     }
 
     /**
-     * [GET] To get a list of user based on parameters given by user i.e minSalary, maxSalary, offset and limit
+     * [GET] Gets a list of user based on parameters given by user i.e minSalary, maxSalary, offset and limit
      * @param minSalary minSalary given by user, if null then 0
      * @param maxSalary maxSalary given by user, if null then 4000
      * @param offset offset given by user, if null then 0
      * @param limit limit given by user, if null then 0
-     * @return Response of 200 with list of user
+     * @return response 200 with list of users
      */
     @GetMapping
     public ResponseEntity<?> fetchUsers(@RequestParam(required = false) Double minSalary, @RequestParam(required = false) Double maxSalary, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
@@ -89,9 +89,9 @@ public class UserController {
     }
 
     /**
-     * [GET] Fetches an employee based on the given id
+     * [GET] Gets an employee based on the given id
      * @param id employee id
-     * @return response 200 if id exists
+     * @return response 200 with user
      */
     @GetMapping(path = "{id}")
     public ResponseEntity<?> fetchUser(@PathVariable String id) {

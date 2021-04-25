@@ -29,22 +29,6 @@ public class User {
         this.startDate = startDate;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
     public String getLogin() {
         return login;
     }
