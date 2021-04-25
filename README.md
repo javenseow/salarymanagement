@@ -11,7 +11,8 @@ To run the application, use the following command:
 <h3>Assumptions</h3>
 <body>
     Some assumptions that were made include:
-    <li>startData of users can be after the date of entry i.e anticipating the user to come in at a later date</li>
+    <li>startDate of users can be after the date of entry i.e anticipating the user to come in at a later date</li>
+    <li>For fetching a list of employees, the limit and offset will only be considered after the list has been sorted</li>
 </body> 
 
 <h3>Design Decisions</h3>
