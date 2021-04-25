@@ -1,12 +1,12 @@
 # salarymanagement
  
 <h3>Build and Test
-* The building and testing of the application is done simultaneously using the following command: 
-<br><code>mvnw install</code></br>
+<li>The building and testing of the application is done simultaneously using the following command: 
+<br><code>mvnw install</code></li>
 
 <h3>Run
-* To run the application, use the following command:
-<br><code>mvnw spring-boot:run</code></br>
+<li>To run the application, use the following command:
+<br><code>mvnw spring-boot:run</code></li>
 
 <h3>Assumptions
 <body>
