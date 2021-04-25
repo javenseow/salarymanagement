@@ -50,6 +50,7 @@ public class Utility {
             LocalDate.parse("2001-11-16"));
 
     public static List<User> fullUserList = new ArrayList<>(List.of(validUser, validUser2));
+    public static List<User> inverseFullUserList = new ArrayList<>(List.of(validUser2, validUser));
 
     public static List<User> userListWithValidUser2 = new ArrayList<>(List.of(validUser2));
 
@@ -59,12 +60,25 @@ public class Utility {
         "e0001,hpotter,Harry Potter,2500.0,16-Nov-01\n" +
         "e0002,rwesley,Ron Weasley,3000.50,2001-11-16";
 
+    private static String csvFirstLineCommentedContent = "id,login,name,salary,startDate\n" +
+            "#e0001,hpotter,Harry Potter,2500.0,16-Nov-01\n" +
+            "e0002,rwesley,Ron Weasley,3000.50,2001-11-16";
+
     private static String csvDuplicateContent = "id,login,name,salary,startDate\n" +
             "e0001,hpotter,Harry Potter,1234.00,16-Nov-01\n" +
             "e0001,hpotter,Harry Potter,1234.00,16-Nov-01";
 
+    private static String csvInvalidSalaryContent = "id,login,name,salary,startDate\n" +
+            "e0002,rwesley,Ron Weasley,-3000.50,2001-11-16";
+
+    private static String csvInvalidRowContent = "id,login,name,salary,startDate\n" +
+            "e0002,rwesley,Ron Weasley, 2001-11-16";
+
     public static MockMultipartFile csvFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvContent.getBytes());
     public static MockMultipartFile csvDuplicateFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvDuplicateContent.getBytes());
     public static MockMultipartFile textFile = new MockMultipartFile("file", "sample.txt", "text/plain", "some xml".getBytes());
+    public static MockMultipartFile csvInvalidSalaryFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvInvalidSalaryContent.getBytes());
+    public static MockMultipartFile csvFirstLineCommentedFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvFirstLineCommentedContent.getBytes());
+    public static MockMultipartFile csvInvalidRowFile = new MockMultipartFile("file", "sample.txt", "text/csv", csvInvalidRowContent.getBytes());
 
 }
