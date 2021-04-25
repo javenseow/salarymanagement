@@ -25,6 +25,7 @@ public class Response {
     public static final String INVALID_MAX_SALARY = "Invalid max salary";
     public static final String INVALID_OFFSET = "Invalid offset";
     public static final String INVALID_LIMIT = "Invalid limit";
+    public static final String INVALID_PARAMS = "Invalid paramters";
 
     public static final String INVALID_CSV = "File not in CSV";
 

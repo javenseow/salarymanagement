@@ -6,29 +6,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ErrorController {
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public static final String START_DATE = "startDate";
+    public static final String SALARY = "salary";
+
+   @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Response> handleException(HttpMessageNotReadableException exception, HttpServletRequest request) {
         Response response;
+        String message = exception.getLocalizedMessage();
 
-        if (exception.getLocalizedMessage().contains("id")) {
-            response = new Response(Response.INVALID_ID);
-        } else if (exception.getLocalizedMessage().contains("login")) {
-            response = new Response(Response.INVALID_LOGIN);
-        } else if (exception.getLocalizedMessage().contains("name")) {
-            response = new Response(Response.INVALID_NAME);
-        } else if (exception.getLocalizedMessage().contains("salary")) {
-            response = new Response(Response.INVALID_SALARY);
-        } else if (exception.getLocalizedMessage().contains("date")) {
+        if (message.contains(START_DATE)) {
             response = new Response(Response.INVALID_DATE);
+        } else if (message.contains(SALARY)) {
+            response = new Response(Response.INVALID_SALARY);
         } else {
-            response = new Response(exception.getLocalizedMessage());
+            response = new Response(message);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Response> handleException(MethodArgumentTypeMismatchException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(Response.INVALID_PARAMS));
     }
 }
