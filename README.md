@@ -1,22 +1,20 @@
 # salarymanagement
  
 <h3>Build and Test</h3>
-<li>The building and testing of the application is done simultaneously using the following command: 
-<br><code>mvnw install</code></li>
+The building and testing of the application is done simultaneously using the following command: 
+<br><code>mvnw install</code>
 
 <h3>Run</h3>
-<li>To run the application, use the following command:
-<br><code>mvnw spring-boot:run</code></li>
+To run the application, use the following command:
+<br><code>mvnw spring-boot:run</code>
 
 <h3>Assumptions</h3>
-<br>
 <body>
     Some assumptions that were made include:
     <li>startData of users can be after the date of entry i.e anticipating the user to come in at a later date</li>
 </body> 
 
 <h3>Design Decisions</h3>
-<br>
 <body>
     The structure of the project is separated into different components with the help of Spring's annotations. 
      This is to ensure Separations of Concerns between different components.
