@@ -87,9 +87,9 @@ public class UserService {
             throw new IllegalStateException(Response.INVALID_MIN_SALARY);
         } else if (!UserHelper.isValidSalary(maxSalary)) {
             throw new IllegalStateException(Response.INVALID_MAX_SALARY);
-        } else if (!UserHelper.isParamMoreThanZero(offset)) {
+        } else if (!UserHelper.isParamMoreThanEqualZero(offset)) {
             throw new IllegalStateException(Response.INVALID_OFFSET);
-        } else if (!UserHelper.isParamMoreThanZero(limit)) {
+        } else if (!UserHelper.isParamMoreThanEqualZero(limit)) {
             throw new IllegalStateException(Response.INVALID_LIMIT);
         }
 

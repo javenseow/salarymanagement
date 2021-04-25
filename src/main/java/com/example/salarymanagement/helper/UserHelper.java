@@ -83,7 +83,7 @@ public class UserHelper {
      * @param parameter parameter to be checked
      * @return true if is more than or equal 0, false otherwise
      */
-    public static boolean isParamMoreThanZero(Integer parameter) {
+    public static boolean isParamMoreThanEqualZero(Integer parameter) {
         return parameter >= 0;
     }
 
