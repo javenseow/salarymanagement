@@ -96,4 +96,33 @@ class UserHelperTest {
         assertTrue(result);
     }
 
+    @Test
+    void processUsers_returnListWithSecondValidUserGivenMinSalary() {
+        List<User> result = UserHelper.processUsers(Utility.fullUserList, Utility.validMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
+        assertEquals(Utility.userListWithValidUser2, result);
+    }
+
+    @Test
+    void processUsers_returnListWithFirstValidUserGivenMaxSalary() {
+        List<User> result = UserHelper.processUsers(Utility.fullUserList, Utility.defaultMinSalary, Utility.validMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
+        assertEquals(Utility.userListWithValidUser, result);
+    }
+
+    @Test
+    void processUsers_returnListWithSecondValidUserGivenValidOffset() {
+        List<User> result = UserHelper.processUsers(Utility.fullUserList, Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.validOffset, Utility.defaultLimit);
+        assertEquals(Utility.userListWithValidUser2, result);
+    }
+
+    @Test
+    void processUsers_returnListWithFirstValidUserGivenValidLimit() {
+        List<User> result = UserHelper.processUsers(Utility.fullUserList, Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.validLimit);
+        assertEquals(Utility.userListWithValidUser, result);
+    }
+
+    @Test
+    void processUsers_returnOrderedListWithDefaultParameters() {
+        List<User> result = UserHelper.processUsers(Utility.inverseFullUserList, Utility.defaultMinSalary, Utility.defaultMaxSalary, Utility.defaultOffset, Utility.defaultLimit);
+        assertEquals(Utility.fullUserList, result);
+    }
 }
