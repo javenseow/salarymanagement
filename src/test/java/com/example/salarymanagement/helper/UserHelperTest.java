@@ -21,4 +21,43 @@ class UserHelperTest {
         boolean result = UserHelper.hasCSVFormat(Utility.textFile);
         assertFalse(result);
     }
+
+    @Test
+    void csvToUser_returnListOfUsersGivenValidInputStream() throws Exception {
+        List<User> result = UserHelper.csvToUser(Utility.csvFile.getInputStream());
+
+        assertEquals(Utility.fullUserList, result);
+    }
+
+    @Test
+    void csvToUser_returnListOfValidUserTwoGivenFirstUserCommented() throws Exception {
+        List<User> result = UserHelper.csvToUser(Utility.csvFirstLineCommentedFile.getInputStream());
+
+        assertEquals(Utility.userListWithValidUser2, result);
+    }
+
+    @Test
+    void csvToUser_throwExceptionGivenInvalidSalary() {
+        Exception e = assertThrows(RuntimeException.class, () -> {
+            UserHelper.csvToUser(Utility.csvInvalidSalaryFile.getInputStream());
+        });
+
+        String expectedMessage = Response.INVALID_SALARY;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
+    @Test
+    void csvToUser_throwExceptionWithMissingColumn() {
+        Exception e = assertThrows(RuntimeException.class, () -> {
+            UserHelper.csvToUser(Utility.csvInvalidRowFile.getInputStream());
+        });
+
+        String expectedMessage = Response.INVALID_ROW;
+        String actualMessage = e.getMessage();
+
+        assertTrue(expectedMessage.contains(actualMessage));
+    }
+
 }
