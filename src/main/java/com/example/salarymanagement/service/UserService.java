@@ -6,6 +6,7 @@ import com.example.salarymanagement.model.User;
 import com.example.salarymanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class UserService {
      * @param file CSV file to be uploaded
      * @return true if there was an update done, false otherwise
      */
+    @Transactional
     public boolean upload(MultipartFile file) {
         boolean changed = false;
         try {
@@ -112,6 +114,7 @@ public class UserService {
      * Creates a new user into the database
      * @param user employee to be added
      */
+    @Transactional
     public void createUser(User user) {
         Optional<User> userOptional = userRepository.findById(user.getId());
 
@@ -132,6 +135,7 @@ public class UserService {
      * Deletes user based on id given
      * @param id employee id
      */
+    @Transactional
     public void deleteUser(String id) {
         // Check if employee exists
         if (!userRepository.existsById(id)) {
@@ -146,6 +150,7 @@ public class UserService {
      * @param id employee id
      * @param user employee details to be updated
      */
+    @Transactional
     public void updateUser(String id, User user) {
         // Check if employee exists
         if (!userRepository.existsById(id)) {
